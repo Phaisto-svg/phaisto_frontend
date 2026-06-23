@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const links = ["About", "Features", "Pricing", "Contact"];
 
@@ -37,12 +37,12 @@ function Navbar() {
           ))}
         </nav>
 
-        <Button
-          className="bg-[#9f3f1f] text-white hover:bg-[#823219]"
-          size="sm"
+        <Link
+          href="/auth"
+          className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-[#9f3f1f] px-3 text-sm font-medium text-white transition-colors hover:bg-[#823219] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
         >
           Get started
-        </Button>
+        </Link>
       </div>
     </header>
   );

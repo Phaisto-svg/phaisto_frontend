@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 function Hero() {
@@ -69,12 +70,12 @@ function Hero() {
             >
               View examples
             </Button>
-            <Button
-              size="lg"
-              className="bg-[#9f3f1f] text-white hover:bg-[#823219]"
+            <Link
+              href="/auth"
+              className="inline-flex h-11 items-center justify-center whitespace-nowrap rounded-md bg-[#9f3f1f] px-5 text-sm font-medium text-white transition-colors hover:bg-[#823219] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
             >
               Get started
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
