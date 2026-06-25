@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AUTHENTICATED_HOME } from "@/app/auth-provider";
 import { supabase } from "@/lib/supabase/client";
 
 export function AuthCallbackClient() {
@@ -27,7 +28,7 @@ export function AuthCallbackClient() {
         return;
       }
 
-      router.replace("/");
+      router.replace(AUTHENTICATED_HOME);
       router.refresh();
     }
 

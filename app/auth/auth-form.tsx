@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/app/auth-provider";
+import { AUTHENTICATED_HOME, useAuth } from "@/app/auth-provider";
 
 function getMessage(error: unknown) {
   if (error instanceof Error) {
@@ -28,7 +28,7 @@ export function AuthForm() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/");
+      router.push(AUTHENTICATED_HOME);
     }
   }, [loading, router, user]);
 
@@ -39,7 +39,7 @@ export function AuthForm() {
 
     try {
       await signInWithEmail(email, password);
-      router.push("/");
+      router.push(AUTHENTICATED_HOME);
       router.refresh();
     } catch (error) {
       setMessage(getMessage(error));

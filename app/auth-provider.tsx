@@ -21,6 +21,7 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AUTHENTICATED_HOME = "/dashboard";
 
 function getAuthRedirectUrl(path = "/auth/callback") {
   if (typeof window === "undefined") {

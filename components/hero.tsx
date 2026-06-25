@@ -3,10 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { AUTHENTICATED_HOME, useAuth } from "@/app/auth-provider";
 import { Button } from "@/components/ui/button";
 
 function Hero() {
+  const { user, loading } = useAuth();
   const [titleNumber, setTitleNumber] = useState(0);
+  const ctaHref = user ? AUTHENTICATED_HOME : "/auth";
+  const ctaLabel = user ? "Open dashboard" : "Get started";
   const titles = useMemo(
     () => ["launches", "campaigns", "promos", "stories", "updates"],
     []
@@ -71,10 +75,10 @@ function Hero() {
               View examples
             </Button>
             <Link
-              href="/auth"
+              href={loading ? "/auth" : ctaHref}
               className="inline-flex h-11 items-center justify-center whitespace-nowrap rounded-md bg-[#9f3f1f] px-5 text-sm font-medium text-white transition-colors hover:bg-[#823219] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
             >
-              Get started
+              {loading ? "Get started" : ctaLabel}
             </Link>
           </div>
         </div>

@@ -1,9 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { AUTHENTICATED_HOME, useAuth } from "@/app/auth-provider";
 
 const links = ["About", "Features", "Pricing", "Contact"];
 
 function Navbar() {
+  const { user, loading } = useAuth();
+  const ctaHref = user ? AUTHENTICATED_HOME : "/auth";
+  const ctaLabel = user ? "Dashboard" : "Get started";
+
   return (
     <header className="w-full border-b border-[#f0e1d7] bg-transparent">
       <div className="mx-auto flex h-24 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -38,10 +45,10 @@ function Navbar() {
         </nav>
 
         <Link
-          href="/auth"
+          href={loading ? "/auth" : ctaHref}
           className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-[#9f3f1f] px-3 text-sm font-medium text-white transition-colors hover:bg-[#823219] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
         >
-          Get started
+          {loading ? "Get started" : ctaLabel}
         </Link>
       </div>
     </header>
