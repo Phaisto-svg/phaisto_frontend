@@ -35,7 +35,6 @@ export function AuthCallbackClient() {
 
         if (data.session) {
           router.replace(AUTHENTICATED_HOME);
-          router.refresh();
           return;
         }
 
@@ -52,7 +51,6 @@ export function AuthCallbackClient() {
       }
 
       router.replace(AUTHENTICATED_HOME);
-      router.refresh();
     }
 
     exchangeCode();

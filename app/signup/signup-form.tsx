@@ -47,7 +47,6 @@ export function SignUpForm() {
       }
 
       router.push(AUTHENTICATED_HOME);
-      router.refresh();
     } catch (error) {
       setMessage(getMessage(error));
     } finally {

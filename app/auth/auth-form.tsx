@@ -40,7 +40,6 @@ export function AuthForm() {
     try {
       await signInWithEmail(email, password);
       router.push(AUTHENTICATED_HOME);
-      router.refresh();
     } catch (error) {
       setMessage(getMessage(error));
     } finally {
