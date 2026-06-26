@@ -47,7 +47,7 @@ export function ProfilePopover({ collapsed = false }: ProfilePopoverProps) {
 
     try {
       await signOut();
-      router.push("/auth");
+      router.push("/");
       router.refresh();
     } finally {
       setIsSigningOut(false);

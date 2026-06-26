@@ -41,7 +41,7 @@ export function Sidebar() {
         ].join(" ")}
       >
         <Link
-          href="/"
+          href="/dashboard"
           aria-label="Phaisto home"
           className={[
             "flex min-w-0 items-center",

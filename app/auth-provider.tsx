@@ -17,13 +17,39 @@ type AuthContextValue = {
   loading: boolean;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signUpWithEmail: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<{ needsEmailConfirmation: boolean }>;
   signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export const AUTHENTICATED_HOME = "/dashboard";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_VERCEL_URL;
+
+function getConfiguredSiteOrigin() {
+  if (!siteUrl) {
+    return null;
+  }
+
+  const normalizedSiteUrl = siteUrl.startsWith("http")
+    ? siteUrl
+    : `https://${siteUrl}`;
+
+  return normalizedSiteUrl.replace(/\/$/, "");
+}
+
 function getAuthRedirectUrl(path = "/auth/callback") {
+  const configuredSiteOrigin = getConfiguredSiteOrigin();
+
+  if (configuredSiteOrigin) {
+    return `${configuredSiteOrigin}${path}`;
+  }
+
   if (typeof window === "undefined") {
     return path;
   }
@@ -78,6 +104,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
+        queryParams: {
+          prompt: "select_account",
+        },
         redirectTo: getAuthRedirectUrl(),
       },
     });
@@ -87,12 +116,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const signUpWithEmail = useCallback(
+    async (name: string, email: string, password: string) => {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+          emailRedirectTo: getAuthRedirectUrl(),
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.session) {
+        setSession(data.session);
+      }
+
+      return {
+        needsEmailConfirmation: !data.session,
+      };
+    },
+    [],
+  );
+
   const signOut = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({
+      scope: "global",
+    });
 
     if (error) {
       throw error;
     }
+
+    setSession(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -102,9 +163,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       signInWithEmail,
       signInWithGoogle,
+      signUpWithEmail,
       signOut,
     }),
-    [loading, session, signInWithEmail, signInWithGoogle, signOut],
+    [
+      loading,
+      session,
+      signInWithEmail,
+      signInWithGoogle,
+      signUpWithEmail,
+      signOut,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

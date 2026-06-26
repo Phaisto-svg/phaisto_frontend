@@ -2,21 +2,44 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AUTHENTICATED_HOME } from "@/app/auth-provider";
 import { supabase } from "@/lib/supabase/client";
 
 export function AuthCallbackClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const hasExchangedCode = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function exchangeCode() {
+      if (hasExchangedCode.current) {
+        return;
+      }
+
+      hasExchangedCode.current = true;
+
+      const providerError =
+        searchParams.get("error_description") ?? searchParams.get("error");
+
+      if (providerError) {
+        setError(providerError);
+        return;
+      }
+
       const code = searchParams.get("code");
 
       if (!code) {
-        setError("Missing authentication code.");
+        const { data } = await supabase.auth.getSession();
+
+        if (data.session) {
+          router.replace(AUTHENTICATED_HOME);
+          router.refresh();
+          return;
+        }
+
+        router.replace("/auth");
         return;
       }
 
